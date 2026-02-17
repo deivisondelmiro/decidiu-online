@@ -1,0 +1,17 @@
+{
+  "nome_completo": "Teste API Cadastro",
+  "email": "teste.api.cadastro@example.com",
+  "cpf": "99988877766",
+  "telefone": "82988887777",
+  "profissao": "Enfermeiro",
+  "vinculo_empregaticio": "CLT",
+  "cep": "57000000",
+  "municipio": "Maceió",
+  "logradouro": "Rua Teste API",
+  "bairro": "Centro",
+  "numero": "456",
+  "complemento": "Sala 10",
+  "cargo": "Enfermeiro(a) Aluno(a)",
+  "senha_hash": "senha123",
+  "criado_por": 1
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        button {
+            background: #2d7a4f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #236b43;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste de Conexão Supabase</h1>
+    <p>Este arquivo testa a conexão com o banco de dados Supabase.</p>
+
+    <button onclick="testarConexao()">Testar Conexão</button>
+    <button onclick="buscarMunicipios()">Buscar Municípios</button>
+    <button onclick="contarMunicipios()">Contar Municípios</button>
+
+    <div id="resultado" class="result"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://htesdvgzzzvzvewkxefq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0ZXNkdmd6enp2enZld2t4ZWZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNDIwODMsImV4cCI6MjA4MzkxODA4M30.9WIM4MzWFRR5Gi1X1Sx_PMwJlTgupEjW5hGq5cUZrsk';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const resultado = document.getElementById('resultado');
+
+        async function testarConexao() {
+            resultado.innerHTML = '<p>Testando conexão...</p>';
+            try {
+                const { data, error } = await supabase
+                    .from('municipios')
+                    .select('count');
+
+                if (error) throw error;
+
+                resultado.innerHTML = `
+                    <p class="success">✅ Conexão estabelecida com sucesso!</p>
+                    <p>Banco: Supabase PostgreSQL</p>
+                `;
+            } catch (error) {
+                resultado.innerHTML = `
+                    <p class="error">❌ Erro na conexão:</p>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        }
+
+        async function buscarMunicipios() {
+            resultado.innerHTML = '<p>Buscando municípios...</p>';
+            try {
+                const { data, error } = await supabase
+                    .from('municipios')
+                    .select('id, nome, estado')
+                    .eq('estado', 'AL')
+                    .order('nome')
+                    .limit(10);
+
+                if (error) throw error;
+
+                resultado.innerHTML = `
+                    <p class="success">✅ Municípios carregados com sucesso!</p>
+                    <p>Total carregado: ${data.length}</p>
+                    <h3>Primeiros 10 municípios:</h3>
+                    <ul>
+                        ${data.map(m => `<li>${m.nome} (${m.estado})</li>`).join('')}
+                    </ul>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultado.innerHTML = `
+                    <p class="error">❌ Erro ao buscar municípios:</p>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        }
+
+        async function contarMunicipios() {
+            resultado.innerHTML = '<p>Contando municípios...</p>';
+            try {
+                const { data, error, count } = await supabase
+                    .from('municipios')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('estado', 'AL');
+
+                if (error) throw error;
+
+                resultado.innerHTML = `
+                    <p class="success">✅ Contagem realizada com sucesso!</p>
+                    <p><strong>Total de municípios de Alagoas: ${count}</strong></p>
+                `;
+            } catch (error) {
+                resultado.innerHTML = `
+                    <p class="error">❌ Erro ao contar municípios:</p>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        }
+
+        // Testar automaticamente ao carregar a página
+        window.onload = () => {
+            testarConexao();
+        };
+    </script>
+</body>
+</html>
