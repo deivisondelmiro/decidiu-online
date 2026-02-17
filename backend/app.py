@@ -9,7 +9,7 @@ from functools import wraps
 app = Flask(__name__)
 
 # Configuração CORS mais abrangente
-CORS(app, resources={
+CORS(app, supports_credentials=True, resources={
     r"/*": {
         "origins": [
             "https://decidiu-online-front-end.onrender.com"
