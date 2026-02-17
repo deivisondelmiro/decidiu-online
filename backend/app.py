@@ -9,15 +9,13 @@ from functools import wraps
 app = Flask(__name__)
 
 # Configuração CORS mais abrangente
-CORS(app,
-     resources={r"/api/*": {
-         "origins": ["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5173", "http://127.0.0.1:5173"],
-         "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-         "allow_headers": ["Content-Type", "X-User-Id", "Authorization"],
-         "supports_credentials": True,
-         "expose_headers": ["Content-Type", "X-User-Id"],
-         "max_age": 3600
-     }})
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            "https://decidiu-online-front-end.onrender.com"
+        ]
+    }
+})
 
 # Middleware para garantir Content-Type JSON em todas as respostas de API
 @app.after_request
